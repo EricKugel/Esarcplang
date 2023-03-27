@@ -7,4 +7,4 @@
  - `P`rogramming
  - `Lang`uage
 
-This is my project for the first part of Algorithms and Data Structures. It is a programming language similar to Lisp.
+This is my project for the first part of Algorithms and Data Structures. It is a programming language similar to Lisp.  
