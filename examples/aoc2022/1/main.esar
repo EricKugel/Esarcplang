@@ -1,5 +1,5 @@
 # Part 1
-lines = readlines("Big Project 1/examples/aoc2022/1/input.txt")
+lines = readlines("U:\Esarcplang\examples\aoc2022\1\input.txt")
 i = 0
 
 elves = list()
