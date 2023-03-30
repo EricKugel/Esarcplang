@@ -41,44 +41,75 @@ def my_print(x):
     return None
 
 def my_input():
-    return input()
+    return '"' + input() + '"'
 
 def my_prompt(x):
-    return input(x)
+    return '"' + input(x) + '"'
 
 def my_num(x):
-    return float(x)
+    try:
+        return float(x)
+    except:
+        return 0
+
+def my_str(x):
+    return str(x)
 
 def my_if(a, b, c):
     if a:
         return b
     return c
 
-def list():
+def my_list():
     return []
 
-def append(a, b):
+def my_len(x):
+    return len(x)
+
+def my_append(a, b):
     a.append(b)
     return a
 
-def insert(a, i, b):
-    a.insert(i, b)
+def my_insert(a, i, b):
+    a.insert(int(i), b)
     return a
 
-def remove(a, i):
-    a.pop(i)
+def my_remove(a, i):
+    a.pop(int(i))
 
-def size(a):
+def my_size(a):
     return len(a)
 
-def get(a, i):
-    return a[i]
+def my_index(a, e):
+    return a.index(e)
 
-def slice(a, i, j):
-    return a[i:j]
+def my_get(a, i):
+    return a[int(i)]
 
-def goto(a):
+def my_slice(a, i, j):
+    return a[int(i):int(j)]
+
+def my_goto(a):
     return "*" + a
+
+def my_pass():
+    pass
+
+def my_read(x):
+    with open(x) as file:
+        return '"' + file.read() + '"'
+    
+def my_readlines(x):
+    with open(x) as file:
+        return ['"' + line.strip() + '"' for line in file.readlines()]
+    
+def my_max(x):
+    return max(x)
+
+def my_pop(a, i):
+    element = a[i]
+    del a[i]
+    return element
 
 functions = {
     "sin": my_sin, 
@@ -96,7 +127,24 @@ functions = {
     "print": my_print,
     "input": my_input,
     "prompt": my_prompt,
-    "num": my_num
+    "num": my_num,
+    "list": my_list,
+    "insert": my_insert,
+    "remove": my_remove,
+    "size": my_size,
+    "get": my_get,
+    "slice": my_slice,
+    "append": my_append,
+    "goto": my_goto,
+    "if": my_if,
+    "pass": my_pass,
+    "str": my_str,
+    "read": my_read,
+    "readlines": my_readlines,
+    "max": my_max,
+    "len": my_len,
+    "index": my_index,
+    "pop": my_pop
 }
 
 operator_functions = {

@@ -1,0 +1,9 @@
+a = 1
+b = 1
+i = 1
+here: print(a)
+sum = a + b
+a = b
+b = sum
+i = i + 1
+if(i < 10, goto("here"), pass())

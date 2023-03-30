@@ -1,7 +1,7 @@
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 alphaBET = alphabet + alphabet.upper()
 variables = alphaBET + "_"
-operators = ["+", "-", "*", "**", "/", "//", "%", "&", "!", "|", "<", "<=", ">", ">=", "==", "!="]
+operators = ["+", "-", "*", "**", "/", "//", "%", "&", "!", "|", "<", "<=", ">", ">=", "==", "!=", "="]
 precedence = {"**": 10,"~": 9.5,"!": 9.5,"*": 9,"/": 9,"//": 9,"%": 9,"+": 8,"-": 8,"<": 7,"<=": 7,">": 7,">=": 7,"==": 7,"!=": 7,"&": 6,"|": 5}
 numbers = "0.123456789"
 
@@ -10,12 +10,14 @@ objects = {
     "false": False,
     "True": True,
     "False": False,
-    "null": None
+    "null": None,
+    "None": None
 }
 
 import time
 from functions import functions, operator_functions
 from inspect import signature
+import sys
 
 def is_operator(data, i):
     return any([i + len(op) < len(data) and data[i:i+len(op)] == op for op in operators])
@@ -34,6 +36,17 @@ def tokenize(data):
                 tokens.append(token)
             token = ""
             tokens.append(char)
+            if char == ",":
+                tokens.insert(-1, ")")
+                j = len(tokens) - 3
+                k = 0
+                while not (tokens[j] in [",", "("] and k == 0):
+                    if tokens[j] == "(":
+                        k += 1
+                    elif tokens[j] == ")":
+                        k -= 1
+                    j -= 1
+                tokens.insert(j + 1, "(")
             i += 1
         elif char in " \t":
             if len(token) > 0:
@@ -91,7 +104,7 @@ def postfix(tokens):
             output.append(token)
         elif token[0] == '"':
             output.append(token)
-        elif all([letter in variables for letter in token]) and not tokens[0] == "(":
+        elif all([letter in variables for letter in token]) and tokens and not tokens[0] == "(":
             output.append(token)
         elif all([letter in variables for letter in token]):
             stack.append(token)
@@ -125,34 +138,46 @@ def evaluate(tokens):
                 stack[-1] = -1 * stack[-1]
             else:
                 b, a = stack.pop(), stack.pop()
-                if str(b)[0] == '"':
+                if len(str(b)) > 0 and str(b)[0] == '"':
                     b = b[1:-1]
-                elif all([letter in variables for letter in str(b)]):
+                elif len(str(b)) > 0 and all([letter in variables for letter in str(b)]):
                     b = objects[str(b)]
-                if str(a)[0] == '"':
+                    if len(str(b)) > 0 and str(b)[0] == '"':
+                        b = b[1:-1]
+                if len(str(a)) > 0 and str(a)[0] == '"':
                     a = a[1:-1]
-                elif all([letter in variables for letter in str(a)]):
+                elif len(str(a)) > 0 and all([letter in variables for letter in str(a)]):
                     a = objects[str(a)]
+                    if len(str(a)) > 0 and str(a)[0] == '"':
+                        a = a[1:-1]
                 stack.append(operator_functions[token](a, b))
         else:
             params = len(signature(functions[token]).parameters)
             args = [stack.pop() for i in range(params)][::-1]
             for i in range(params):
                 arg = args[i]
-                if str(arg)[0] == '"':
+                if len(str(arg)) > 0 and str(arg)[0] == '"':
                     args[i] = arg[1:-1]
-                elif all([letter in variables for letter in str(arg)]):
+                elif len(str(args[i])) > 0 and all([letter in variables for letter in str(arg)]):
                     args[i] = objects[str(arg)]
+                    if len(str(args[i])) > 0 and str(args[i])[0] == '"':
+                        args[i] = args[i][1:-1]
             stack.append(functions[token](*args))
-    return stack[-1]
+    result = stack[-1] if stack else None
+    if len(str(result)) > 0 and all([letter in variables for letter in str(result)]):
+        result = objects[str(result)]
+    return result
 
+file_name = sys.argv[1]
 data = []
-with open("Big Project 1/input.esar", "r") as file:
+with open(file_name, "r") as file:
     data = file.readlines()
 
 labelled_lines = {}
 lines = []
 for i, line in enumerate(data):
+    if line.strip().startswith("#"):
+        line = ""
     line = tokenize(line)
     if ":" in line:
         labelled_lines[line[0]] = i
@@ -172,5 +197,3 @@ while line_number < len(lines):
             line_number = labelled_lines[value[1:]]
             continue
     line_number += 1
-
-print(evaluate(postfix(tokenize('1 + 1 < 3 & 22 == 22'))))

@@ -1,0 +1,8 @@
+i = 0
+here: output = ""
+output = output + if(i % 3 == 0, "fizz ", "")
+output = output + if(i % 5 == 0, "buzz ", "")
+output = output + if(output == "", str(i), "")
+print(output)
+i = i + 1
+if(i <= 30, goto("here"), pass())

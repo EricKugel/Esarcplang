@@ -1,0 +1,23 @@
+# Part 1
+lines = readlines("Big Project 1/examples/aoc2022/1/input.txt")
+i = 0
+
+elves = list()
+elf = 0
+start_while: if(get(lines, i) == "", pass(), goto("end_if"))
+append(elves, elf)
+elf = 0
+i = i + 1
+end_if: elf = elf + if(get(lines, i) == "", 0, num(get(lines, i)))
+i = i + 1
+if(i < len(lines) - 1, goto("start_while"), pass())
+
+print("Part 1: " + str(max(elves)))
+
+# Part 2:
+total = 0
+i = 0
+loop: total = total + pop(elves, index(elves, max(elves)))
+i = i + 1
+if(i == 3, pass(), goto("loop"))
+print("Part 2: " + str(total))
